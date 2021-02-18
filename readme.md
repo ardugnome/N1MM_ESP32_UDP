@@ -24,12 +24,19 @@ For more information on N1MM:  https://n1mmwp.hamdocs.com/
 For more information on UDP XML: https://n1mmwp.hamdocs.com/appendices/external-udp-broadcasts
 
 Typical output:
+
 N1MM UDP server up and listening on port ('IP Address', 'port number#')
+
 160 meters band, Relay # 1 Radio#: 1 Antenna#: 0
+
 80 meters band, Relay # 2 Radio#: 1 Antenna#: 0
+
 40 meters band, Relay # 3 Radio#: 1 Antenna#: 0
+
 40 meters band, Relay # 3 Radio#: 1 Antenna#: 2
+
 20 meters band, Relay # 5 Radio#: 1 Antenna#: 0
+
 20 meters band, Relay # 5 Radio#: 1 Antenna#: 1
 
 2/17/2021 NJ9R
