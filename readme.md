@@ -18,7 +18,9 @@ Band change (160-70cm) less 5Mhz and 222 MHz  activate a pin corresponding to re
 Antenna change  *see note below
 Radio change (Radio1 vs. Radio2) for SO2R
 *Antenna change is done by pressing ALT+F9 in N1MM if the antennas and bands were set up in N1MM>Config>ConfigPorts>Antennas
+
 For more information on N1MM:  https://n1mmwp.hamdocs.com/
+
 For more information on UDP XML: https://n1mmwp.hamdocs.com/appendices/external-udp-broadcasts
 
 Typical output:
