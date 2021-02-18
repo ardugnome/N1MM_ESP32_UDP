@@ -5,7 +5,7 @@ Radio field needs to be checked in N1MM
 Make sure you have a space between the first and second IP, and replace the x with your home net address in N1MM
 Also replace the "SSID" and "pass" with your own WiFi credentials
 
-Coded for ESP 32 Wroom board - use only pins 4,13,16,17,18,19,21,22,23,25,26,27,32,33 for relay command
+Coded in MicorPython (Python) for ESP 32 Wroom board - use only pins 4,13,16,17,18,19,21,22,23,25,26,27,32,33 for relay command
 
 You need a blue board or transistors to drive relays, do not drive them from the ESP32 pins directly
 
