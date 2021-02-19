@@ -8,7 +8,7 @@ Make sure you have a space between the first and second IP, and replace the x wi
 
 Replace the "SSID" and "pass" with your own WiFi credentials
 
-Coded in MicroPython (Python) for ESP 32 Wroom board - use only pins 4,13,16,17,18,19,21,22,23,25,26,27,32,33 for relay command
+Coded in MicroPython (Python) for ESP 32 Wroom board DEVKITV1 (30 pin) - for relay command use only pins 13,14,18,19,23,25,26,27,32,33 (and 21 ,22 if you sacrifice I2C)
 
 You need a blue board or transistors to drive relays, do not drive them from the ESP32 pins directly
 
@@ -46,5 +46,9 @@ N1MM UDP server up and listening on port ('IP Address', 'port number#')
 20 meters band, Relay # 5 Radio#: 1 Antenna#: 0
 
 20 meters band, Relay # 5 Radio#: 1 Antenna#: 1
+
+
+
+Reccomended pin use from here: https://www.electronicshub.org/esp32-pinout/
 
 2/17/2021 NJ9R
