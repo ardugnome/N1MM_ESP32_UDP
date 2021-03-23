@@ -79,6 +79,8 @@ Added photos of completed WiCS-4 antenna switch.
 
 Known issues:
 
+Need schematic diagram
+
 When changing from Manual to Auto there is a long wait.
 
 In Auto mode if N1MM is not started or there is no internet connection or N1MM is started before the WiCS-4 the two may not connect. Reboot N1MM.
