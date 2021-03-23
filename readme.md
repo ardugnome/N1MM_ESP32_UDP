@@ -1,3 +1,5 @@
+NOT FOR COMMERCIAL USE !
+
 Credit for original code to https://github.com/gabrielonet/N1MM
 
 N1MM antenna/band selector based on UDP port 12060 found in N1MM>Config>ConfigPorts>BroadcastData
