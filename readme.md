@@ -41,10 +41,15 @@ Typical debug output:
 N1MM UDP server up and listening on port ('IP Address', 'port number#')
 
 160 meters band, Relay # 1 Radio#: 1 Antenna#: 0
+
  80 meters band, Relay # 2 Radio#: 1 Antenna#: 0
+ 
  40 meters band, Relay # 3 Radio#: 1 Antenna#: 0
+ 
  40 meters band, Relay # 3 Radio#: 1 Antenna#: 2
+ 
  20 meters band, Relay # 5 Radio#: 1 Antenna#: 0
+ 
  20 meters band, Relay # 5 Radio#: 1 Antenna#: 1
 
 
@@ -53,15 +58,25 @@ Reccomended pin use from here: https://www.electronicshub.org/esp32-pinout/
 
 2/17/2021
 
-Update 3/22/21
+Update: 3/22/21
+
 Added OLED code based on ssd1306 display.
+
 Changed OLED from 128x32 to 128x64, both will work, but 128x64 looks bigger.
+
 Added rssi information on the screen to monitor Wifi signal strength.
-Added frequency information on the screen in auto mode (user has to choose between rssi and freq)
+
+Added frequency information on the screen in auto mode(user has to choose between rssi and freq).
+
 Added manual mode when N1MM is not running.
+
 Added code to switch between auto and manual modes.
+
 Added photos of completed WiCS-4 antenna switch.
 
+
 Known issues:
+
 When changing from Manual to Auto there is a long wait.
-In Auto mode If N1MM is not started or there is no internet connection or N1MM is started before the WiCS-4 the two may not connect. Reboot N1MM.
+
+In Auto mode if N1MM is not started or there is no internet connection or N1MM is started before the WiCS-4 the two may not connect. Reboot N1MM.
