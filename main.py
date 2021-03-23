@@ -1,18 +1,17 @@
 #  !!!    NOT FOR COMMERCIAL USE !!!
 #
-#N1MM band selector based on UDP port 12060 found in N1MM>Config>ConfigPorts>BroadcastData
-#Radio field needs to be checked and the following information typed 127.0.0.1:12060 192.x.x.255:12060
-#Make sure you have a space between the first and second IP, and replace the x with your home net address
-#Also replace the SSID and pass with your own WiFi credentials
-#!ESP 32 Wroom board - use only pins 4,13,16,17,18,19,21,22,23,25,26,27,32,33 for relay command
-#!you need a blue board or transistors to drive relays, do not drive them from the ESP32 pins
+# WiCS-4 is a N1MM band selector based on UDP port 12060 found in N1MM>Config>ConfigPorts>BroadcastData
+# Radio field needs to be checked and the following information typed 127.0.0.1:12060 192.x.x.255:12060
+# Make sure you have a space between the first and second IP, and replace the x with your home net address
+# Also replace the SSID and pass with your own WiFi credentials
+# !ESP 32 Wroom board - use only pins 4,13,16,17,18,19,21,22,23,25,26,27,32,33 for relay command
+# !you need a blue board or transistors to drive relays, do not drive them from the ESP32 pins
 # You can set this file to start at boot by renaming it main.py if you know what you're getting into
 #
 # Original N1MM code from https://github.com/gabrielonet/N1MM
 #
-# Modified by ardugnome
+# Print, prints (debug) on your Thony serial display or any other serial monitor such as Arduino
 #
-# Print, prints on your Thony serial display or any other 
 import network, usocket, utime, time
 import machine
 from socket import *
@@ -57,7 +56,7 @@ b10.value(0)
 b6 = Pin(18, Pin.OUT)
 b6.value(0)
 
-#The pins below are not implemented because are used for OLED
+#The pins below are not implemented because are used for OLED but the code is there and will give you an error if you attempt to use it above 6m
 #Pin21 and 22 are used for OLED i2c
 #Use 2 and 4
 b2 = Pin(21, Pin.OUT)
@@ -99,7 +98,7 @@ i2c = SoftI2C(scl=Pin(22), sda=Pin(21), freq=400000)
 oled_width = 128
 oled_height = 32
 oled = ssd1306.SSD1306_I2C(oled_width, oled_height, i2c)
-# Raspbery Pi Logo as 32x32 array
+# Raspbery Pi Logo as 32x32 array for future testing, loads on boot skewed
 buffer = bytearray(b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00|?\x00\x01\x86@\x80\x01\x01\x80\x80\x01\x11\x88\x80\x01\x05\xa0\x80\x00\x83\xc1\x00\x00C\xe3\x00\x00~\xfc\x00\x00L'\x00\x00\x9c\x11\x00\x00\xbf\xfd\x00\x00\xe1\x87\x00\x01\xc1\x83\x80\x02A\x82@\x02A\x82@\x02\xc1\xc2@\x02\xf6>\xc0\x01\xfc=\x80\x01\x18\x18\x80\x01\x88\x10\x80\x00\x8c!\x00\x00\x87\xf1\x00\x00\x7f\xf6\x00\x008\x1c\x00\x00\x0c \x00\x00\x03\xc0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00")
 # Load the raspberry pi logo into the framebuffer (the image is 32x32)
 fb = framebuf.FrameBuffer(buffer, 32, 32, framebuf.MONO_HLSB)
@@ -107,7 +106,7 @@ fb = framebuf.FrameBuffer(buffer, 32, 32, framebuf.MONO_HLSB)
 oled.blit(fb, 38, 1)
 oled.show()
 sleep(3)
-#Antenna logo
+# WiCS-4 antenna logo, yes it's a 4el beam.HI
 ANTENNA = [
     [ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [ 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0],
@@ -132,19 +131,22 @@ oled.text('N1MM Server',1,1)
 oled.text(str(IP), 1, 12)
 oled.text('UDP Port: '+str(localPort), 1, 22)
 oled.show()
-sleep(3)
+sleep(5)
 graphics = gfx.GFX(oled_width, oled_height, oled.pixel)
 
 
 #Pin definition for manual control: 36 (VP), 39(VN), 34 , 35
-#Pull each pin up with a resistor to 3.3v
+#Pull each pin up with an external resistor to 3.3v
+#You cannot pull them in software because they do not have internal pull-up resistors !
 p36 = Pin(36, Pin.IN)
 p39 = Pin(39, Pin.IN)
 p34 = Pin(34, Pin.IN)
 p35 = Pin(35, Pin.IN)
+
+# Antenna placeholder, when things go wrong...
 AnT='OOPS...'
 
-#Relay output pins see wiring diagram 
+# Relay output pins see wiring diagram 
 Pin2 = Pin(2, Pin.OUT) # Relay 1
 Pin4 = Pin(4, Pin.OUT) # Relay 2
 Pin5 = Pin(5, Pin.OUT) # Relay 3
@@ -153,14 +155,15 @@ Pin2.off(), Pin4.off(), Pin5.off()
 
        
 def manualAntenna():
+    #OLED initialization
     oled = ssd1306.SSD1306_I2C(oled_width, oled_height, i2c)
-    old_ant=99
+    old_ant=99 #antenna placeholder
     while(True):
-            
+            #you flipped the switch from manual to auto
             if 1==p36.value() and 1==p39.value() and 1==p34.value() and 1==p35.value():
                 print('Auto Antenna')
                 autoAntenna() 
-            
+                #otherwise continue
             oled.fill(0)
             oled.text('MANUAL', 1,1)
             rssi=str(station.status('rssi'))
@@ -168,36 +171,36 @@ def manualAntenna():
             oled.text(rssi+'dBm', 75,10,1)
             
             if 0==p36.value():
-                #pos 4 -0v
+                #pos 4 -0v default when no power is applied to the original RCS-4
                 ant=3
             elif 0==p39.value():
-                #pos3 -12v
+                #pos3 -12v on the controller coax center pin
                 ant=2
             elif 0==p34.value():
-                #Pos 2 +12v
+                #Pos 2 +12v on the controller coax center pin
                 ant=1
             elif 0==p35.value():
-                #Pos1 12vAC
+                #Pos1 12vAC on the controller coax center pin
                 ant=0
             else:
                 autoAntenna()
-                
+            #change the names below to match your antennas MAX 10 characters
             if ant==0:
-                #Position 1
+                #Position 1 multiband end fed antenna
                 AnT='LONG WIRE'
                 Pin2.on()
                 Pin4.on()
                 Pin5.on()
                 sleep(0.1)
             if ant==1:
-                #Position 2
+                #Position 2 Triband beam
                 AnT='BEAM'
                 Pin2.off()
                 Pin4.off()
                 Pin5.on()
                 sleep(0.1)
             if ant==2:
-                #Position 3
+                #Position 3 40/6m dipole
                 AnT='40m DIPOLE'
                 Pin2.off()
                 Pin4.on()
@@ -227,7 +230,7 @@ def autoAntenna():
         if 0==p36.value() or 0==p39.value() or 0==p34.value() or 0==p35.value():
                 print('Manual Antenna')
                 manualAntenna() 
-        
+        #lines above in case you flip the switch to manual mode when in auto
         rssi=str(station.status('rssi'))
         graphics.fill_rect(75,10,128,10,0)
         oled.text(rssi+'dBm', 75,10,1)
@@ -371,17 +374,19 @@ def autoAntenna():
                 Pin5.off()
                 sleep(0.2)
                 
-            # OLED initialization for boot time information
+            # OLED initialization
             i2c = SoftI2C(scl=Pin(22), sda=Pin(21), freq=400000)
             oled.fill(0)       
             oled.text('Band: ' + str(band) +' mtrs', 0,0)    
             oled.text('Ant: '+AnT, 0,20,1)         
-            #Uncoment the line below if you want more information in auto mode
-            #Make sure you coment out the RSSI line 230, 231
-            #Frequency information on the OLED, too crowded for me
+            
+            #Uncoment the line below if you want more OLED information in auto mode
+            #but make sure you coment out the RSSI line 230, 231
+            #the frequency information displayed on the OLED is too crowded for me
             #oled.text('Frq: '+ str(freq), 0, 10)    
             oled.show()
-                      
+
+# This is the whole program, four lines of code, the rest is just fluff...HI                      
 if 0==p36.value() or 0==p39.value() or 0==p34.value() or 0==p35.value():
     manualAntenna()
 else:
