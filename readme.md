@@ -16,10 +16,15 @@ When finished testing, rename the WiCS-4.py file to main.py to start at boot.
 
 Download Thonny from https://thonny.org and set RUN>SELECT INTERPRETER> MicroPython (ESP32) and corresponding COM port to upload files to the ESP32.
 
-Files:
-WiCS-4.py   -main program file
+Files (load them to your ESP32 board)
+
+WiCS-4.py   -main program file (rename main.py when all is working to your satisfaction)
+
 ssd1306.py  -OLED display driver file
+
 gfx.py      -GFX graphics library
+
+i2c_scan    -good for finding out your OLED's address
 
 Features: 
 
@@ -80,6 +85,8 @@ Added photos of completed WiCS-4 antenna switch.
 Known issues:
 
 Need schematic diagram
+
+Band decoder requires the pins mentioned in the code brought to a DB-15 connector or other header (DB-25, in-line, terminal block)
 
 When changing from Manual to Auto there is a long wait.
 
