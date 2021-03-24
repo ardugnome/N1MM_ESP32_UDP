@@ -81,10 +81,11 @@ Added code to switch between auto and manual modes.
 
 Added photos of completed WiCS-4 antenna switch.
 
+Added schematic diagram.
+
 
 Known issues:
 
-Need schematic diagram
 
 Band decoder requires the pins mentioned in the code brought to a DB-15 connector or other header (DB-25, in-line, terminal block)
 
