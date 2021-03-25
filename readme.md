@@ -4,6 +4,11 @@ WiCS-4 is a program based on the N1MM XML UDP packets which in conjunction with 
 This assumes you already have the RCS-4 switch, the software may be used with any ESP-32 wifi based antenna switch.
 Antenna change is done in N1MM automatically on band change, or by repeatedly tapping Alt+F9 to switch between multiple antennas on the same band. A manual mode is also provided which bypasses the N1MM software. 
 
+A feature request (#573) for this XML tag was placed on March 6 , 2021 with the N1MM development team and is currently awating review. 
+This would automatically add the antenna name to the OLED without a need for hard coding it.
+When the Antenna Name will be available as an XML tag, this software will be updated. 
+
+
 Credit for original code to https://github.com/gabrielonet/N1MM
 
 2/17/2021
