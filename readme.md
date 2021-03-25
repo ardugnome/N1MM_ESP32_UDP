@@ -2,19 +2,64 @@ NOT FOR COMMERCIAL USE !
 
 Credit for original code to https://github.com/gabrielonet/N1MM
 
-N1MM antenna/band selector based on UDP port 12060 found in N1MM>Config>ConfigPorts>BroadcastData
+2/17/2021
 
-"Radio" field needs to be checked, and your home IP broadcast address entered in N1MM configurator.  
+N1MM software:-
 
-Replace the "SSID" and "pass" with your own WiFi credentials.
+N1MM antenna/band selector based on UDP broadcast on port 12060.
+Configuration found in N1MM>Config>ConfigPorts>BroadcastData
 
-Coded in MicroPython (Python) for ESP 32 Wroom board DEVKITV1 (30 pin) - for relay command use only pins 13,14,18,19,23,25,26,27,32,33 (and 21 ,22 if you sacrifice display)
+"Radio" field needs to be checked in N1MM for UDP broadcast to start, and your home IP broadcast address entered in the N1MM configurer.  
 
-You need a 4 relay board with low trigger current, 2-4 mA to drive them from the ESP32 pins directly.
+https://n1mmwp.hamdocs.com/setup/the-configurer/
 
-When finished testing, rename the WiCS-4.py file to main.py to start at boot.
+
+Hardware:-
+
+Assumes you already have the Ameritron RCS-4 remote controlled coax switch.
+
+(This unit replaces the original Ameriton controller head unit, the Ameriton relay box remains the same.)
+
+(Can be configured as a standalone wireless antenna switch with additional hardware.)
+
+ESP-32 DEVKIT board 30 pin minimum.
+
+4 relay board with low trigger current, 2-4 mA to drive them from the ESP32 pins directly.
+
+OLED SSD1306 0.96 in. 128x64 display, also works with 0.91in 128x32
+
+OLED 3D printed screen cover, plastic, or machine your own.
+
+Enclosure, mine is from Jameco
+
+Four position rotary switch or encoder (if you choose the encoder you have to code your own code)
+
+Two SO239 panel mount connectors
+
+Two SPST miniature switches
+
+Dc/Dc converter preferred,  or 7-9v regulator with a proper heatsink!!! 
+
+Disc and electrolitic capacitors, diodes, rf choke, fuse, etc. per original RCS-4 schematic (we re-create the power supply from the original Ameriton x
+Controller)
+
+Standoffs, screws, pcb headers wires and related mounting hardware.
+
+Front panel labels, lettering or laser printing.
+
+Copper shield if desired.
+
+
+Python Software:-
 
 Download Thonny from https://thonny.org and set RUN>SELECT INTERPRETER> MicroPython (ESP32) and corresponding COM port to upload files to the ESP32.
+
+
+ESP-32 software:-
+
+Coded in MicroPython (Python) for ESP 32 Wroom board DEVKITV1 (30 pin) -the band decoder uses the following pins:
+(13,14,18,19,23,25,26,27,32,33 (and 21 ,22 if you sacrifice the display))
+
 
 Files (load them to your ESP32 board)
 
@@ -26,22 +71,29 @@ gfx.py      -GFX graphics library
 
 i2c_scan    -good for finding out your OLED's address
 
+Inside WiCS-4.py replace the "SSID" and "pass" with your own WiFi credentials.
+
+When finished testing, rename the WiCS-4.py file to main.py to start at boot.
+
+
+
 Features: 
 
-Band change (160-6m) less 5Mhz, 144, 222 and 432MHz  pulls high a pin corresponding to relay 1-10 for your band decoder
-Pins for 2m and 432 are used to drive the OLED
+Band change (160-6m) less 5Mhz, 144, 222 and 432MHz. Pulls pin high, corresponding to "relay" 1-10 for band decoder output.
+Pins for 2m and 432 are used to drive the OLED and should not be used unless you do not inteito have a screen.
 
-Antenna change in automatic mode: flip the switch to auto mode and have N1MM broadcast UDP *see note below
-*Requires internet connection with your home WiFi, antenna change is done by pressing ALT+F9 in N1MM assuming the antenna/band combination was set up correctly in N1MM>Config>ConfigPorts>Antennas
+Antenna change in automatic mode: flip the switch to auto mode and toggle antennas with Alt+F9 in N1MM *see note below
+*Requires internet connection with your home WiFi, assuming N1MM is configured properly to broadcast UDP and is running, the antenna/band combination needs to be set up correctly in N1MM>Config>ConfigPorts>Antennas
 
 Antenna change in manual mode: flip manual/auto to manual, and rotate the knob to desired antenna. 
 
-Radio change (Radio1 vs. Radio2) for SO2R is being broadcasted by N1MM
+Radio number 1 vs 2 as decided from UDP stream. (Not used yet)
 
 
 For more information on N1MM:  https://n1mmwp.hamdocs.com/
 
 For more information on UDP XML: https://n1mmwp.hamdocs.com/appendices/external-udp-broadcasts
+
 
 Typical debug output:
 
@@ -63,17 +115,17 @@ N1MM UDP server up and listening on port ('IP Address', 'port number#')
 
 Reccomended pin use from here: https://www.electronicshub.org/esp32-pinout/
 
-2/17/2021
+
 
 Update: 3/22/21
 
 Added OLED code based on ssd1306 display.
 
-Changed OLED from 128x32 to 128x64, both will work, but 128x64 looks bigger.
+Changed OLED from 128x32 (0.91in) to 128x64 (0.96in), both will work, but 128x64 looks bigger.
 
-Added rssi information on the screen to monitor Wifi signal strength.
+Added rssi information on the screen to monitor Wifi signal strength. 
 
-Added frequency information on the screen in auto mode(user has to choose between rssi and freq).
+Added frequency information on the screen in auto mode(user has to choose between rssi and freq), currently only rssi is dispayed.
 
 Added manual mode when N1MM is not running.
 
@@ -87,7 +139,7 @@ Added schematic diagram.
 Known issues:
 
 
-Band decoder requires the pins mentioned in the code brought to a DB-15 connector or other header (DB-25, in-line, terminal block)
+Band decoder option requires the pins mentioned in the code brought to a DB-15 connector or other header (DB-25, in-line, terminal block)
 
 When changing from Manual to Auto there is a long wait.
 
