@@ -22,25 +22,27 @@ Assumes you already have the Ameritron RCS-4 remote controlled coax switch.
 
 (Can be configured as a standalone wireless antenna switch with additional hardware.)
 
-ESP-32 DEVKIT board 30 pin minimum.
+Uses the original Ameriton 12vAC power supply that was packaged with the RCS-4 switch.
 
-4 relay board with low trigger current, 2-4 mA to drive them from the ESP32 pins directly.
+ESP-32 DEVKIT board 30 or 36 pin.
+
+4 relay board (5V) with low trigger current, 2-4 mA to be driven from the ESP32 pins directly.
 
 OLED SSD1306 0.96 in. 128x64 display, also works with 0.91in 128x32
 
 OLED 3D printed screen cover, plastic, or machine your own.
 
-Enclosure, mine is from Jameco
+Metal or plastic, enclosure, mine is from Jameco.
 
 Four position rotary switch or encoder (if you choose the encoder you have to code your own code)
 
-Two SO239 panel mount connectors
+Two SO239 panel mount connectors.
 
-Two SPST miniature switches
+Two SPST miniature switches.
 
 Dc/Dc converter preferred,  or 7-9v regulator with a proper heatsink!!! 
 
-Disc and electrolitic capacitors, diodes, rf choke, fuse, etc. per original RCS-4 schematic (we re-create the power supply from the original Ameriton x
+Disc and electrolitic capacitors, diodes, rf choke, fuse, etc. per original RCS-4 schematic (we re-create the power supply (12vAC, -12vDC and +12vDC) from the original Ameriton 
 Controller)
 
 Standoffs, screws, pcb headers wires and related mounting hardware.
@@ -55,17 +57,19 @@ Python Software:-
 Download Thonny from https://thonny.org and set RUN>SELECT INTERPRETER> MicroPython (ESP32) and corresponding COM port to upload files to the ESP32.
 
 
-ESP-32 software:-
+N1MM_ESP-32_UDP software:-
 
-Coded in MicroPython (Python) for ESP 32 Wroom board DEVKITV1 (30 pin) -the band decoder uses the following pins:
+Coded in MicroPython (Python) for the ESP 32 Wroom board DEVKITV1 (30 pin version) 
+
+The band decoder option uses the following pins:
 (13,14,18,19,23,25,26,27,32,33 (and 21 ,22 if you sacrifice the display))
 
 
-Files (load them to your ESP32 board)
+Installation Files (load them to your ESP32 board using Thonny)
 
 WiCS-4.py   -main program file (rename main.py when all is working to your satisfaction)
 
-ssd1306.py  -OLED display driver file
+ssd1306.py  -OLED display driver file with 03c as display address.
 
 gfx.py      -GFX graphics library
 
@@ -73,8 +77,10 @@ i2c_scan    -good for finding out your OLED's address
 
 Inside WiCS-4.py replace the "SSID" and "pass" with your own WiFi credentials.
 
-When finished testing, rename the WiCS-4.py file to main.py to start at boot.
+If you have the OLED attached run i2c_scan.py to make sure your display's address is 03c.
+Make any adjustments to the antenna names as desired and run WiCS-4.py
 
+When finished testing, rename the WiCS-4.py file to main.py to start at boot.
 
 
 Features: 
@@ -144,3 +150,9 @@ Band decoder option requires the pins mentioned in the code brought to a DB-15 c
 When changing from Manual to Auto there is a long wait.
 
 In Auto mode if N1MM is not started or there is no internet connection or N1MM is started before the WiCS-4 the two may not connect. Reboot N1MM.
+
+
+Final thoughts.
+
+I'm sure the program can be cleaned up a lot by someone with a lot more experience.
+EULA. This program is free for non commercial use, with no warranty expressed or implied, all these experiments are at your own risk, I cannot be held responsible for any damages. USE OF THIS SOFTWARE/HARDWARE CONSTITUTES ACCEPTANCE OF THIS AGREEMENT. 
