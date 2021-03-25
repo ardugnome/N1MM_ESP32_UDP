@@ -381,7 +381,7 @@ def autoAntenna():
             oled.text('Ant: '+AnT, 0,20,1)         
             
             #Uncoment the line below if you want more OLED information in auto mode
-            #but make sure you coment out the RSSI line 230, 231
+            #but make sure you coment out the RSSI line 170, 171
             #the frequency information displayed on the OLED is too crowded for me
             #oled.text('Frq: '+ str(freq), 0, 10)    
             oled.show()

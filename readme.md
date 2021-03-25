@@ -93,7 +93,7 @@ Antenna change in automatic mode: flip the switch to auto mode and toggle antenn
 
 Antenna change in manual mode: flip manual/auto to manual, and rotate the knob to desired antenna. 
 
-Radio number 1 vs 2 as decided from UDP stream. (Not used yet)
+Radio number 1 vs 2 as decoded from UDP stream. (Not used yet)
 
 
 For more information on N1MM:  https://n1mmwp.hamdocs.com/
