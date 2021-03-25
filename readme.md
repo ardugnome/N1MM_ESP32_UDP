@@ -1,15 +1,19 @@
 NOT FOR COMMERCIAL USE !
 
+WiCS-4 is an N1MM XML UDP based remote coax switch controller, that replaces the original Ameriton RCS-4 control unit. Assumes you already have the RCS-4 switch, but can be used with any ESP-32 based antenna switch.
+Antenna change is done in N1MM by repeatedly tapping Alt+F9.
+
 Credit for original code to https://github.com/gabrielonet/N1MM
 
 2/17/2021
 
-N1MM software:-
 
-N1MM antenna/band selector based on UDP broadcast on port 12060.
-Configuration found in N1MM>Config>ConfigPorts>BroadcastData
+N1MM software installed and running:-
 
-"Radio" field needs to be checked in N1MM for UDP broadcast to start, and your home IP broadcast address entered in the N1MM configurer.  
+WiCS-4 is a N1MM antenna/band selector, based on UDP broadcast on port 12060.
+Configuration and set-up found in N1MM>Config>ConfigPorts>BroadcastData
+
+"Radio" field needs to be checked in N1MM for UDP broadcast to start, and your home IP broadcast address entered in the N1MM configurer with last octet of .255 (ex. 192.168.1.255)
 
 https://n1mmwp.hamdocs.com/setup/the-configurer/
 
@@ -18,29 +22,29 @@ Hardware:-
 
 Assumes you already have the Ameritron RCS-4 remote controlled coax switch.
 
-(This unit replaces the original Ameriton controller head unit, the Ameriton relay box remains the same.)
+(This unit, WiCS-4,replaces the original Ameriton controller head unit, the Ameriton relay box remains the same.)
 
 (Can be configured as a standalone wireless antenna switch with additional hardware.)
 
 Uses the original Ameriton 12vAC power supply that was packaged with the RCS-4 switch.
 
-ESP-32 DEVKIT board 30 or 36 pin.
+One ESP-32 DEVKIT board 30 or 36 pin.
 
-4 relay board (5V) with low trigger current, 2-4 mA to be driven from the ESP32 pins directly.
+One 4 relay board (5V) with low trigger current, 2-4 mA to be driven from the ESP32 pins directly.
 
-OLED SSD1306 0.96 in. 128x64 display, also works with 0.91in 128x32
+One OLED SSD1306 0.96 in. 128x64 display, also works with 0.91in 128x32
 
 OLED 3D printed screen cover, plastic, or machine your own.
 
-Metal or plastic, enclosure, mine is from Jameco.
+A metal or plastic, enclosure, mine is from Jameco.
 
-Four position rotary switch or encoder (if you choose the encoder you have to code your own code)
+A four position rotary switch or encoder (if you choose the encoder you have to code your own code)
 
 Two SO239 panel mount connectors.
 
 Two SPST miniature switches.
 
-Dc/Dc converter preferred,  or 7-9v regulator with a proper heatsink!!! 
+A Dc/Dc converter preferred,  or 7-9v regulator with a proper heatsink!!! 
 
 Disc and electrolitic capacitors, diodes, rf choke, fuse, etc. per original RCS-4 schematic (we re-create the power supply (12vAC, -12vDC and +12vDC) from the original Ameriton 
 Controller)
@@ -52,12 +56,14 @@ Front panel labels, lettering or laser printing.
 Copper shield if desired.
 
 
-Python Software:-
+
+Python Software up and running:-
 
 Download Thonny from https://thonny.org and set RUN>SELECT INTERPRETER> MicroPython (ESP32) and corresponding COM port to upload files to the ESP32.
 
 
-N1MM_ESP-32_UDP software:-
+
+N1MM_ESP-32_UDP software, located in this repository:-
 
 Coded in MicroPython (Python) for the ESP 32 Wroom board DEVKITV1 (30 pin version) 
 
@@ -65,7 +71,7 @@ The band decoder option uses the following pins:
 (13,14,18,19,23,25,26,27,32,33 (and 21 ,22 if you sacrifice the display))
 
 
-Installation Files (load them to your ESP32 board using Thonny)
+Installation (load all files ending in .py to your ESP32 board using Thonny)
 
 WiCS-4.py   -main program file (rename main.py when all is working to your satisfaction)
 
@@ -73,11 +79,11 @@ ssd1306.py  -OLED display driver file with 03c as display address.
 
 gfx.py      -GFX graphics library
 
-i2c_scan    -good for finding out your OLED's address
+i2c_scan.py    -good for finding out your OLED's address
 
 Inside WiCS-4.py replace the "SSID" and "pass" with your own WiFi credentials.
 
-If you have the OLED attached run i2c_scan.py to make sure your display's address is 03c.
+If you have the OLED attached, run i2c_scan.py to make sure your display's address is 03c.
 Make any adjustments to the antenna names as desired and run WiCS-4.py
 
 When finished testing, rename the WiCS-4.py file to main.py to start at boot.
@@ -141,18 +147,21 @@ Added photos of completed WiCS-4 antenna switch.
 
 Added schematic diagram.
 
+Changed file names.
+
+
 
 Known issues:
 
 
-Band decoder option requires the pins mentioned in the code brought to a DB-15 connector or other header (DB-25, in-line, terminal block)
+Band decoder option requires the pins mentioned above brought to a DB-15 connector or other header (DB-25, in-line, terminal block)
 
 When changing from Manual to Auto there is a long wait.
 
-In Auto mode if N1MM is not started or there is no internet connection or N1MM is started before the WiCS-4 the two may not connect. Reboot N1MM.
+In Auto mode if N1MM is not started or there is no internet connection or N1MM is started before the WiCS-4 the two may not connect. Close and reopen N1MM.
 
 
 Final thoughts.
 
 I'm sure the program can be cleaned up a lot by someone with a lot more experience.
-EULA. This program is free for non commercial use, with no warranty expressed or implied, all these experiments are at your own risk, I cannot be held responsible for any damages. USE OF THIS SOFTWARE/HARDWARE CONSTITUTES ACCEPTANCE OF THIS AGREEMENT. 
+EULA. This program is free for non commercial use, with no warranty expressed or implied, all experiments are at your own risk, I cannot be held responsible for any damages. USE OF THIS SOFTWARE/HARDWARE CONSTITUTES ACCEPTANCE OF THIS AGREEMENT. 
