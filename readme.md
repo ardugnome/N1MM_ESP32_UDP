@@ -1,7 +1,8 @@
 NOT FOR COMMERCIAL USE !
 
-WiCS-4 is an N1MM XML UDP based remote coax switch controller, that replaces the original Ameriton RCS-4 control unit. Assumes you already have the RCS-4 switch, but can be used with any ESP-32 based antenna switch.
-Antenna change is done in N1MM by repeatedly tapping Alt+F9.
+WiCS-4 is a program based on the N1MM XML UDP packets which in conjunction with the specified hardware, replaces the remote coax switch controller of the original Ameriton/MFJ RCS-4 unit. 
+This assumes you already have the RCS-4 switch, the software may be used with any ESP-32 wifi based antenna switch.
+Antenna change is done in N1MM automatically on band change, or by repeatedly tapping Alt+F9 to switch between multiple antennas on the same band. A manual mode is also provided which bypasses the N1MM software. 
 
 Credit for original code to https://github.com/gabrielonet/N1MM
 
