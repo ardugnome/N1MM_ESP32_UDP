@@ -118,13 +118,16 @@ Typical debug output:
 N1MM UDP server up and listening on port ('IP Address', 'port number#')
 
 40 meters band, MCU: Pin(27) Radio#: 1 Antenna#: 3
+
 40 meters band, MCU: Pin(27) Radio#: 1 Antenna#: 1
+
 20 meters band, MCU: Pin(25) Radio#: 1 Antenna#: 0
+
 20 meters band, MCU: Pin(25) Radio#: 1 Antenna#: 2
+
 20 meters band, MCU: Pin(25) Radio#: 1 Antenna#: 3
+
 20 meters band, MCU: Pin(25) Radio#: 1 Antenna#: 0
-20 meters band, MCU: Pin(25) Radio#: 1 Antenna#: 2
-20 meters band, MCU: Pin(25) Radio#: 1 Antenna#: 3
 
 
 
