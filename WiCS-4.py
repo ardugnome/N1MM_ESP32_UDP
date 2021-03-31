@@ -22,6 +22,7 @@ import ssd1306
 from ssd1306 import SSD1306_I2C
 import framebuf
 from time import sleep
+import errno
 gc.enable()
 
 #The pins below can be used for band decoder output
@@ -83,7 +84,7 @@ bytesToSend         = str.encode(msgFromServer)
 
 addrs = (IP, localPort)
 s = socket(AF_INET, SOCK_DGRAM)
-#s.settimeout(15)
+s.settimeout(15)
 s.bind(addrs)
 #The line below is for serial output debugging
 print("N1MM UDP server up and listening on port", IP)
@@ -125,7 +126,7 @@ oled.text('WiCS-4 - NJ9R ',15,1)
 oled.text('Remote Wi-Fi',1,12)
 oled.text('Antenna Switch',1,22)
 oled.show()
-sleep(2)
+sleep(3)
 oled.fill(0)
 oled.text('N1MM Server',1,1)
 oled.text(str(IP), 1, 12)
@@ -155,64 +156,72 @@ Pin2.off(), Pin4.off(), Pin5.off()
 
        
 def manualAntenna():
-    #OLED initialization
     oled = ssd1306.SSD1306_I2C(oled_width, oled_height, i2c)
-    old_ant=99 #antenna placeholder
+    old_ant=99
+    
     while(True):
-            #you flipped the switch from manual to auto
+            
             if 1==p36.value() and 1==p39.value() and 1==p34.value() and 1==p35.value():
-                print('Auto Antenna')
+                print('Auto Antenna while in Manual Mode')
                 autoAntenna() 
-                #otherwise continue
+            
             oled.fill(0)
             oled.text('MANUAL', 1,1)
             rssi=str(station.status('rssi'))
-            graphics.fill_rect(1,1,128,10,1)
+            #graphics.fill_rect(1,1,128,10,1)
             oled.text(rssi+'dBm', 75,10,1)
             
             if 0==p36.value():
-                #pos 4 -0v default when no power is applied to the original RCS-4
+                #pos 4 -0v
                 ant=3
             elif 0==p39.value():
-                #pos3 -12v on the controller coax center pin
+                #pos3 -12v
                 ant=2
             elif 0==p34.value():
-                #Pos 2 +12v on the controller coax center pin
+                #Pos 2 +12v
                 ant=1
             elif 0==p35.value():
-                #Pos1 12vAC on the controller coax center pin
+                #Pos1 12vAC
                 ant=0
             else:
                 autoAntenna()
-            #change the names below to match your antennas MAX 10 characters
+                
             if ant==0:
-                #Position 1 multiband end fed antenna
+                #Position 1
                 AnT='LONG WIRE'
                 Pin2.on()
-                Pin4.on()
-                Pin5.on()
                 sleep(0.1)
+                Pin4.on()
+                sleep(0.1)
+                Pin5.on()
+                
             if ant==1:
-                #Position 2 Triband beam
+                #Position 2
                 AnT='BEAM'
                 Pin2.off()
-                Pin4.off()
-                Pin5.on()
                 sleep(0.1)
+                Pin4.off()
+                sleep(0.1)
+                Pin5.on()
+                
             if ant==2:
-                #Position 3 40/6m dipole
+                #Position 3
                 AnT='40m DIPOLE'
                 Pin2.off()
-                Pin4.on()
-                Pin5.on()
                 sleep(0.1)
+                Pin4.on()
+                sleep(0.1)
+                Pin5.on()
+                
             if ant==3:
                 #Position 4
                 AnT='DUMMY LOAD'
                 Pin2.off()
-                Pin4.off()
-                Pin5.off()
                 sleep(0.1)
+                Pin4.off()
+                sleep(0.1)
+                Pin5.off()
+                
             if old_ant !=ant:
                 old_ant=ant
             
@@ -220,171 +229,188 @@ def manualAntenna():
             oled.text('Ant: '+AnT, 1,20,1)
             oled.show()
             
-            
+             
 def autoAntenna():
-    
+    oled.fill(0)
+    oled.show()
     freq_temp = 0
     radio_temp = 0
     ant_temp = 0
-    while(True):
-        if 0==p36.value() or 0==p39.value() or 0==p34.value() or 0==p35.value():
-                print('Manual Antenna')
-                manualAntenna() 
-        #lines above in case you flip the switch to manual mode when in auto
-        rssi=str(station.status('rssi'))
-        graphics.fill_rect(75,10,128,10,0)
-        oled.text(rssi+'dBm', 75,10,1)
-        oled.show()
-        bytesAddressPair = s.recvfrom(bufferSize) 
-        message = bytesAddressPair[0]
-        clientMsg = "Message from Client:{}".format(message)             
-        parser1 = clientMsg.split("</Freq")[0]  
-        freq = int(float(parser1.split("Freq>")[1])) 
-        parser2 = clientMsg.split("</RadioNr")[0]  
-        radio = int(int(parser2.split("RadioNr>")[1]))
-        parser3 = clientMsg.split("</Antenna")[0]  
-        ant = int(int(parser3.split("Antenna>")[1]))
-        #print('in Auto loop')
-        if radio !=radio_temp or ant !=ant_temp or freq != freq_temp:
-            #need to add pin change above to work outside N1MM 
-            freq_temp = freq
-            ant_temp=ant
-            radio_temp=radio
-            band=0
-            #Display ham bands and band decoder
-            if 179999 < freq < 200000:
-                b160.value(0),b80.value(0),b40.value(0),b30.value(0),b20.value(0),b17.value(0),\
-                b15.value(0),b12.value(0),b10.value(0),b6.value(0),b2.value(0),b70.value(0)
-                b160.value(1)             
-                band='160'
-                print (band+" meters band, MCU:",str(b160)+" Radio#:", radio, "N1MM Antenna#:", ant)       
-            if 349999 < freq < 400000:
-                b160.value(0),b80.value(0),b40.value(0),b30.value(0),b20.value(0),b17.value(0),\
-                b15.value(0),b12.value(0),b10.value(0),b6.value(0),b2.value(0),b70.value(0)
-                b80.value(1)
-                band='80'
-                print(band+" meters band, MCU:",str(b80)+" Radio#:", radio, "Antenna#:", ant) 
-            if 533050 < freq < 540350:
-                band='60'    
-                
-            if 699999 < freq < 730000:
-                b160.value(0),b80.value(0),b40.value(0),b30.value(0),b20.value(0),b17.value(0),\
-                b15.value(0),b12.value(0),b10.value(0),b6.value(0),b2.value(0),b70.value(0)
-                b40.value(1) 
-                band='40'
-                print(band+" meters band, MCU:",str(b40)+" Radio#:", radio, "Antenna#:", ant)
-            if 1010000 < freq < 1015000:
-                b160.value(0),b80.value(0),b40.value(0),b30.value(0),b20.value(0),b17.value(0),\
-                b15.value(0),b12.value(0),b10.value(0),b6.value(0),b2.value(0),b70.value(0)
-                b30.value(1)
-                band='30'
-                print(band+" meters band, MCU:",str(b30)+" Radio#:", radio, "Antenna#:", ant)
-            if 1399999 < freq < 1435000: 
-                b160.value(0),b80.value(0),b40.value(0),b30.value(0),b20.value(0),b17.value(0),\
-                b15.value(0),b12.value(0),b10.value(0),b6.value(0),b2.value(0),b70.value(0)
-                b20.value(1)
-                band='20'
-                print(band+" meters band, MCU:",str(b20)+" Radio#:", radio, "Antenna#:", ant)
-            if 1806799 < freq < 1816800:
-                b160.value(0),b80.value(0),b40.value(0),b30.value(0),b20.value(0),b17.value(0),\
-                b15.value(0),b12.value(0),b10.value(0),b6.value(0),b2.value(0),b70.value(0)
-                b17.value(1) 
-                band='17'
-                print(band+" meters band, MCU:",str(b17)+" Radio#:", radio, "Antenna#:", ant)
-            if 2099999 < freq < 2145000:
-                b160.value(0),b80.value(0),b40.value(0),b30.value(0),b20.value(0),b17.value(0),\
-                b15.value(0),b12.value(0),b10.value(0),b6.value(0),b2.value(0),b70.value(0)
-                b15.value(1) 
-                band='15'
-                print(band+" meters band, MCU:",str(b15)+" Radio#:", radio, "Antenna#:", ant)
-            if 2489000 < freq < 2499000:
-                b160.value(0),b80.value(0),b40.value(0),b30.value(0),b20.value(0),b17.value(0),\
-                b15.value(0),b12.value(0),b10.value(0),b6.value(0),b2.value(0),b70.value(0)
-                b12.value(1) 
-                band='12'
-                print(band+" meters band, MCU:",str(b12)+" Radio#:", radio, "Antenna#:", ant)
-            if 2696500<freq<2740500:
-                band='C.B. Band'
-            if 2799999 < freq < 2970000:  
-                b160.value(0),b80.value(0),b40.value(0),b30.value(0),b20.value(0),b17.value(0),\
-                b15.value(0),b12.value(0),b10.value(0),b6.value(0),b2.value(0),b70.value(0)
-                b10.value(1)
-                band='10'
-                print(band+" meters band, MCU:",str(b10)+" Radio#:", radio, "Antenna#:", ant)
-            if 4999999 < freq < 5400000:
-                b160.value(0),b80.value(0),b40.value(0),b30.value(0),b20.value(0),b17.value(0),\
-                b15.value(0),b12.value(0),b10.value(0),b6.value(0),b2.value(0),b70.value(0)
-                b6.value(1) 
-                band='6'
-                print(band+" meters band, MCU:",str(b6)+" Radio#:", radio, "Antenna#:", ant)
-            if 14399999 < freq < 14800000:         
-                b160.value(0),b80.value(0),b40.value(0),b30.value(0),b20.value(0),b17.value(0),\
-                b15.value(0),b12.value(0),b10.value(0),b6.value(0),b2.value(0),b70.value(0)
-                b2.value(1)
-                band='2'
-                print(band+" meters band, MCU:",str(b2)+" Radio#:", radio, "Antenna#:", ant)
-            if 42000000 < freq < 45000000:
-                b160.value(0),b80.value(0),b40.value(0),b30.value(0),b20.value(0),b17.value(0),\
-                b15.value(0),b12.value(0),b10.value(0),b6.value(0),b2.value(0),b70.value(0)
-                b70.value(1) 
-                band='70c'
-                print(band+" meters band, MCU:",str(b70)+" Radio#:", radio, "Antenna#:", ant)
-            #Display outside the ham bands
-            if 3000<freq<27900:
-                band='LongWave  '
-            if 27999<freq<150000:
-                band= 'MediumWave  '
-            if 150000 <freq< 179999 or 200001 <freq< 349999 or 400001 <freq< 533049 \
-                or 540351 <freq< 699999 or 730001 <freq< 1009999 or 1015001 <freq< 1400000 \
-                 or 1435001 <freq< 1806800 or 1816800 <freq< 2100000 or 2145000 <freq< 2489000 \
-                  or 2499000 <freq <2696500 or 2740500 <freq< 2800000 or 2970001 <freq< 3000000:
-                band= 'ShortWave  '
-            if 3000001 <freq< 4999999 or 5400001 <freq< 14400000:
-                band='VHF       '
-            if freq>30000000:
-                band='UHF       '
-            
-       
-            if ant==0:
-                #Position 1
-                AnT='LONG WIRE'
-                Pin2.on()
-                Pin4.on()
-                Pin5.on()
-                sleep(0.2)
-            if ant==1:
-                #Position 2
-                AnT='BEAM'
-                Pin2.off()
-                Pin4.off()
-                Pin5.on()
-                sleep(0.2)
-            if ant==2:
-                #Position 3
-                AnT='40m DIPOLE'
-                Pin2.off()
-                Pin4.on()
-                Pin5.on()
-                sleep(0.2)
-            if ant==3:
-                #Position 4
-                AnT='DUMMY LOAD'
-                Pin2.off()
-                Pin4.off()
-                Pin5.off()
-                sleep(0.2)
-                
-            # OLED initialization
-            i2c = SoftI2C(scl=Pin(22), sda=Pin(21), freq=400000)
-            oled.fill(0)       
-            oled.text('Band: ' + str(band) +' mtrs', 0,0)    
-            oled.text('Ant: '+AnT, 0,20,1)         
-            
-            #Uncoment the line below if you want more OLED information in auto mode
-            #but make sure you coment out the RSSI line 170, 171
-            #the frequency information displayed on the OLED is too crowded for me
-            #oled.text('Frq: '+ str(freq), 0, 10)    
+    try:
+        while(True):
+            if 0==p36.value() or 0==p39.value() or 0==p34.value() or 0==p35.value():
+                    print('Manual Antenna')
+                    manualAntenna() 
+            rssi=str(station.status('rssi'))
+            graphics.fill_rect(75,10,128,10,0)
+            oled.text(rssi+'dBm', 75,10,1)
             oled.show()
+            bytesAddressPair = s.recvfrom(bufferSize) 
+            message = bytesAddressPair[0]
+            clientMsg = "Message from Client:{}".format(message)             
+            parser1 = clientMsg.split("</Freq")[0]  
+            freq = int(float(parser1.split("Freq>")[1])) 
+            parser2 = clientMsg.split("</RadioNr")[0]  
+            radio = int(int(parser2.split("RadioNr>")[1]))
+            parser3 = clientMsg.split("</Antenna")[0]  
+            ant = int(int(parser3.split("Antenna>")[1]))
+            #print('in Auto loop')
+            if radio !=radio_temp or ant !=ant_temp or freq != freq_temp:
+                #need to add pin change above to work outside N1MM 
+                freq_temp = freq
+                ant_temp=ant
+                radio_temp=radio
+                band=0
+                #Display ham bands and band decoder
+                if 179999 < freq < 200000:
+                    b160.value(0),b80.value(0),b40.value(0),b30.value(0),b20.value(0),b17.value(0),\
+                    b15.value(0),b12.value(0),b10.value(0),b6.value(0),b2.value(0),b70.value(0)
+                    b160.value(1)             
+                    band='160'
+                    print (band+" meters band, MCU:",str(b160)+" Radio#:", radio, "N1MM Antenna#:", ant)       
+                if 349999 < freq < 400000:
+                    b160.value(0),b80.value(0),b40.value(0),b30.value(0),b20.value(0),b17.value(0),\
+                    b15.value(0),b12.value(0),b10.value(0),b6.value(0),b2.value(0),b70.value(0)
+                    b80.value(1)
+                    band='80'
+                    print(band+" meters band, MCU:",str(b80)+" Radio#:", radio, "Antenna#:", ant) 
+                if 533050 < freq < 540350:
+                    band='60'    
+                    
+                if 699999 < freq < 730000:
+                    b160.value(0),b80.value(0),b40.value(0),b30.value(0),b20.value(0),b17.value(0),\
+                    b15.value(0),b12.value(0),b10.value(0),b6.value(0),b2.value(0),b70.value(0)
+                    b40.value(1) 
+                    band='40'
+                    print(band+" meters band, MCU:",str(b40)+" Radio#:", radio, "Antenna#:", ant)
+                if 1010000 < freq < 1015000:
+                    b160.value(0),b80.value(0),b40.value(0),b30.value(0),b20.value(0),b17.value(0),\
+                    b15.value(0),b12.value(0),b10.value(0),b6.value(0),b2.value(0),b70.value(0)
+                    b30.value(1)
+                    band='30'
+                    print(band+" meters band, MCU:",str(b30)+" Radio#:", radio, "Antenna#:", ant)
+                if 1399999 < freq < 1435000: 
+                    b160.value(0),b80.value(0),b40.value(0),b30.value(0),b20.value(0),b17.value(0),\
+                    b15.value(0),b12.value(0),b10.value(0),b6.value(0),b2.value(0),b70.value(0)
+                    b20.value(1)
+                    band='20'
+                    print(band+" meters band, MCU:",str(b20)+" Radio#:", radio, "Antenna#:", ant)
+                if 1806799 < freq < 1816800:
+                    b160.value(0),b80.value(0),b40.value(0),b30.value(0),b20.value(0),b17.value(0),\
+                    b15.value(0),b12.value(0),b10.value(0),b6.value(0),b2.value(0),b70.value(0)
+                    b17.value(1) 
+                    band='17'
+                    print(band+" meters band, MCU:",str(b17)+" Radio#:", radio, "Antenna#:", ant)
+                if 2099999 < freq < 2145000:
+                    b160.value(0),b80.value(0),b40.value(0),b30.value(0),b20.value(0),b17.value(0),\
+                    b15.value(0),b12.value(0),b10.value(0),b6.value(0),b2.value(0),b70.value(0)
+                    b15.value(1) 
+                    band='15'
+                    print(band+" meters band, MCU:",str(b15)+" Radio#:", radio, "Antenna#:", ant)
+                if 2489000 < freq < 2499000:
+                    b160.value(0),b80.value(0),b40.value(0),b30.value(0),b20.value(0),b17.value(0),\
+                    b15.value(0),b12.value(0),b10.value(0),b6.value(0),b2.value(0),b70.value(0)
+                    b12.value(1) 
+                    band='12'
+                    print(band+" meters band, MCU:",str(b12)+" Radio#:", radio, "Antenna#:", ant)
+                if 2696500<freq<2740500:
+                    band='C.B. Band'
+                if 2799999 < freq < 2970000:  
+                    b160.value(0),b80.value(0),b40.value(0),b30.value(0),b20.value(0),b17.value(0),\
+                    b15.value(0),b12.value(0),b10.value(0),b6.value(0),b2.value(0),b70.value(0)
+                    b10.value(1)
+                    band='10'
+                    print(band+" meters band, MCU:",str(b10)+" Radio#:", radio, "Antenna#:", ant)
+                if 4999999 < freq < 5400000:
+                    b160.value(0),b80.value(0),b40.value(0),b30.value(0),b20.value(0),b17.value(0),\
+                    b15.value(0),b12.value(0),b10.value(0),b6.value(0),b2.value(0),b70.value(0)
+                    b6.value(1) 
+                    band='6'
+                    print(band+" meters band, MCU:",str(b6)+" Radio#:", radio, "Antenna#:", ant)
+                if 14399999 < freq < 14800000:         
+                    b160.value(0),b80.value(0),b40.value(0),b30.value(0),b20.value(0),b17.value(0),\
+                    b15.value(0),b12.value(0),b10.value(0),b6.value(0),b2.value(0),b70.value(0)
+                    b2.value(1)
+                    band='2'
+                    print(band+" meters band, MCU:",str(b2)+" Radio#:", radio, "Antenna#:", ant)
+                if 42000000 < freq < 45000000:
+                    b160.value(0),b80.value(0),b40.value(0),b30.value(0),b20.value(0),b17.value(0),\
+                    b15.value(0),b12.value(0),b10.value(0),b6.value(0),b2.value(0),b70.value(0)
+                    b70.value(1) 
+                    band='70c'
+                    print(band+" meters band, MCU:",str(b70)+" Radio#:", radio, "Antenna#:", ant)
+                #Display outside the ham bands
+                if 3000<freq<27900:
+                    band='LongWave  '
+                if 27999<freq<150000:
+                    band= 'MediumWave  '
+                if 150000 <freq< 179999 or 200001 <freq< 349999 or 400001 <freq< 533049 \
+                    or 540351 <freq< 699999 or 730001 <freq< 1009999 or 1015001 <freq< 1400000 \
+                     or 1435001 <freq< 1806800 or 1816800 <freq< 2100000 or 2145000 <freq< 2489000 \
+                      or 2499000 <freq <2696500 or 2740500 <freq< 2800000 or 2970001 <freq< 3000000:
+                    band= 'ShortWave  '
+                if 3000001 <freq< 4999999 or 5400001 <freq< 14400000:
+                    band='VHF       '
+                if freq>30000000:
+                    band='UHF       '
+                
+           
+                if ant==2:
+                    #Position 1
+                    AnT='LONG WIRE'
+                    Pin2.on()
+                    sleep(0.1)
+                    Pin4.on()
+                    sleep(0.1)
+                    Pin5.on()
+                    
+                if ant==0:
+                    #Position 2
+                    AnT='BEAM'
+                    Pin2.off()
+                    sleep(0.1)
+                    Pin4.off()
+                    sleep(0.1)
+                    Pin5.on()
+                    
+                if ant==1:
+                    #Position 3
+                    AnT='40m DIPOLE'
+                    Pin2.off()
+                    sleep(0.1)
+                    Pin4.on()
+                    sleep(0.1)
+                    Pin5.on()
+                    
+                if ant==3:
+                    #Position 4
+                    AnT='DUMMY LOAD'
+                    Pin2.off()
+                    sleep(0.1)
+                    Pin4.off()
+                    sleep(0.1)
+                    Pin5.off()
+                    
+                    
+                # OLED initialization for boot time information
+                i2c = SoftI2C(scl=Pin(22), sda=Pin(21), freq=400000)
+                oled.fill(0)       
+                oled.text('Band: ' + str(band) +' mtrs', 0,0)    
+                oled.text('Ant: '+AnT, 0,20,1)         
+                #Uncoment the line below if you want more information in auto mode
+                #Make sure you coment out the RSSI line 230, 231
+                #Frequency information on the OLED, too crowded for me
+                #oled.text('Frq: '+ str(freq), 0, 10)    
+                oled.show()
+    except OSError:
+        print('Error')
+        oled.fill(0)
+        oled.text('N1MM server down',1,1,1)
+        oled.text('...rebooting',0,20,1)
+        oled.show()
+        sleep(1)
+        autoAntenna()
+        #machine.reset()
 
 # This is the whole program, four lines of code, the rest is just fluff...HI                      
 if 0==p36.value() or 0==p39.value() or 0==p34.value() or 0==p35.value():
