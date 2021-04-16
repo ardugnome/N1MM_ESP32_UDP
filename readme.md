@@ -74,7 +74,7 @@ N1MM_ESP-32_UDP software, located in this repository:-
 Coded in MicroPython (Python) for the ESP 32 Wroom board DEVKITV1 (30 pin version) 
 
 The band decoder option uses the following pins:
-(13,14,18,19,23,25,26,27,32,33 (and 21 ,22 if you sacrifice the display))
+13,14,18,19,23,25,26,27,32,33 for 160m-6m, and 21 ,22 for 2m and 70cm if you sacrifice the OLED display.
 
 
 Installation (load all files ending in .py to your ESP32 board using Thonny)
