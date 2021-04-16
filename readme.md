@@ -107,6 +107,8 @@ Antenna change in manual mode: flip manual/auto to manual, and rotate the knob t
 
 Radio number 1 vs 2 as decoded from UDP stream. (Not used yet)
 
+To use the band decoder option, bring the required pins, mentioned above, to a DB-15/DB-25 connector or other header type, in-line or terminal block that suits your needs. 
+
 
 For more information on N1MM:  https://n1mmwp.hamdocs.com/
 
@@ -160,7 +162,6 @@ Changed file names.
 Known issues:
 
 
-Band decoder option requires the pins mentioned above brought to a DB-15 connector or other header (DB-25, in-line, terminal block)
 
 When changing from Manual to Auto there is a long wait.
 
