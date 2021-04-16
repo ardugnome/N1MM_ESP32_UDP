@@ -1,5 +1,5 @@
 #  !!!    NOT FOR COMMERCIAL USE !!!
-#
+# ver 1.0
 # WiCS-4 is a N1MM band selector based on UDP port 12060 found in N1MM>Config>ConfigPorts>BroadcastData
 # Radio field needs to be checked and the following information typed 127.0.0.1:12060 192.x.x.255:12060
 # Make sure you have a space between the first and second IP, and replace the x with your home net address
