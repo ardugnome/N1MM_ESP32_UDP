@@ -341,17 +341,17 @@ def autoAntenna():
                     print(band+" meters band, MCU:",str(b70)+" Radio#:", radio, "Antenna#:", ant)
                 #Display outside the ham bands
                 if 3000<freq<27900:
-                    band='LongWave  '
+                    band='Long Wave '
                 if 27999<freq<150000:
-                    band= 'MediumWave  '
+                    band= 'Medium Wave '
                 if 150000 <freq< 179999 or 200001 <freq< 349999 or 400001 <freq< 533049 \
                     or 540351 <freq< 699999 or 730001 <freq< 1009999 or 1015001 <freq< 1400000 \
                      or 1435001 <freq< 1806800 or 1816800 <freq< 2100000 or 2145000 <freq< 2489000 \
                       or 2499000 <freq <2696500 or 2740500 <freq< 2800000 or 2970001 <freq< 3000000:
                     band= 'ShortWave  '
-                if 3000001 <freq< 4999999 or 5400001 <freq< 14400000:
+                if 3000001 <freq< 4999999 or 5400001 <freq< 30000001:
                     band='VHF       '
-                if freq>30000000:
+                if freq>30000001:
                     band='UHF       '
                 
            
