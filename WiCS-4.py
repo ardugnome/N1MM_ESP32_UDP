@@ -104,9 +104,9 @@ buffer = bytearray(b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00|?\x00\
 # Load the raspberry pi logo into the framebuffer (the image is 32x32)
 fb = framebuf.FrameBuffer(buffer, 32, 32, framebuf.MONO_HLSB)
 # Blit the image from the framebuffer to the oled display
-oled.blit(fb, 38, 1)
-oled.show()
-sleep(3)
+# oled.blit(fb, 38, 1)
+# oled.show()
+# sleep(3)
 # WiCS-4 antenna logo, yes it's a 4el beam.HI
 ANTENNA = [
     [ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
